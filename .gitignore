@@ -1,5 +1,7 @@
 # Prerequisites
 *.d
+.clangd/
+.clang-format/
 
 # Object files
 *.o

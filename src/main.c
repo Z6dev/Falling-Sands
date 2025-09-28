@@ -31,7 +31,6 @@ World Sandworld;
 
 int main(void) {
     srand(time(NULL));
-    printf("Im too lazy to draw text so:\nPress 1, 2, 3 and 0 to switch materials.\nHave Fun!!!");
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         ThrowError("SDL Failed To Initialize!");
@@ -39,8 +38,9 @@ int main(void) {
 
     Sandworld = New_World(M_WIDTH, M_HEIGHT);
 
-    window =
-        SDL_CreateWindow("Falling Sands", 0, 0, M_WIDTH * SCALE, M_HEIGHT * SCALE, SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow(
+        "Falling Sands", 0, 0, M_WIDTH * SCALE, M_HEIGHT * SCALE, SDL_WINDOW_SHOWN
+    );
     if (window == NULL) {
         ThrowError("SDL Failed To Create Window!");
     }
@@ -53,6 +53,41 @@ int main(void) {
     emscripten_set_main_loop(main_loop, 0, true);
 
     return 0;
+}
+
+//--------------------------------------------
+void AddCell(int mx, int my, int size) {
+    for (int dy = -size / 2; dy <= size / 2; dy++) {
+        for (int dx = -size / 2; dx <= size / 2; dx++) {
+            int nx = mx + dx;
+            int ny = my + dy;
+            if (nx < 0 || nx >= Sandworld.width || ny < 0 || ny >= Sandworld.height)
+                continue;
+
+            Sandworld.grid[ny * Sandworld.width + nx].Type = selected_cell;
+
+            int randval = rand() % 30;
+            switch (selected_cell) {
+            case CELL_SAND:
+                Sandworld.grid[ny * Sandworld.width + nx].Color =
+                    (SDL_Color){252 - randval, 202 - randval, 0, 255};
+                break;
+
+            case CELL_WALL:
+                Sandworld.grid[ny * Sandworld.width + nx].Color =
+                    (SDL_Color){120 - randval, 120 - randval, 120 - randval, 255};
+                break;
+
+            case CELL_WATER:
+                Sandworld.grid[ny * Sandworld.width + nx].Color =
+                    (SDL_Color){64 - randval, 164 - randval, 233 - randval, 255};
+                break;
+
+            case CELL_EMPTY:
+                break;
+            }
+        }
+    }
 }
 
 void main_loop(void) {
@@ -93,37 +128,7 @@ void main_loop(void) {
             int mx = mouseX / SCALE;
             int my = mouseY / SCALE;
 
-            for (int dy = -1; dy <= 1; dy++) {
-                for (int dx = -1; dx <= 1; dx++) {
-                    int nx = mx + dx;
-                    int ny = my + dy;
-                    if (nx < 0 || nx >= Sandworld.width || ny < 0 || ny >= Sandworld.height)
-                        continue;
-
-                    Sandworld.grid[ny * Sandworld.width + nx].Type = selected_cell;
-
-                    int randval = rand() % 30;
-                    switch (selected_cell) {
-                    case CELL_SAND:
-                        Sandworld.grid[ny * Sandworld.width + nx].Color =
-                            (SDL_Color){252 - randval, 202 - randval, 0, 255};
-                        break;
-
-                    case CELL_WALL:
-                        Sandworld.grid[ny * Sandworld.width + nx].Color =
-                            (SDL_Color){120 - randval, 120 - randval, 120 - randval, 255};
-                        break;
-
-                    case CELL_WATER:
-                        Sandworld.grid[ny * Sandworld.width + nx].Color =
-                            (SDL_Color){64 - randval, 164 - randval, 233 - randval, 255};
-                        break;
-
-                    case CELL_EMPTY:
-                        break;
-                    }
-                }
-            }
+            AddCell(mx, my, 5);
         }
     }
 

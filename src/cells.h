@@ -6,7 +6,6 @@
 #endif
 
 #include <stdbool.h>
-#include <stdlib.h>
 
 typedef enum { CELL_EMPTY, CELL_SAND, CELL_WALL, CELL_WATER } CellType;
 
