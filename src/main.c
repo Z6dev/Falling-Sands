@@ -31,6 +31,7 @@ World Sandworld;
 
 int main(void) {
     srand(time(NULL));
+    printf("Im too lazy to draw text so:\nPress 1, 2, 3 and 0 to switch materials.\nHave Fun!!!");
 
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         ThrowError("SDL Failed To Initialize!");
